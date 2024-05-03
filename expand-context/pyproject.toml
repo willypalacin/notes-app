@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "expand-context"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [
+    { include = "app" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+uvicorn = "^0.23.2"
+langserve = {extras = ["server"], version = ">=0.0.30"}
+pydantic = "<2"
+google-cloud-aiplatform = "^1.48.0"
+googlemaps = "^4.10.0"
+langchainhub = "^0.1.15"
+langchain-google-vertexai = "^1.0.1"
+langchain = "^0.1.16"
+langchain-community = "^0.0.34"
+google-api-python-client = "^2.126.0"
+
+
+[tool.poetry.group.dev.dependencies]
+langchain-cli = ">=0.0.15"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
