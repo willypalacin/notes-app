@@ -3,9 +3,8 @@ from fastapi.responses import RedirectResponse
 from langserve import add_routes
 import vertexai
 from typing import Any
-from vertexai.preview import reasoning_engines
 from langchain_google_vertexai import VertexAI
-from langchain_community.tools import GooglePlacesTool, tool
+from langchain.tools import GooglePlacesTool, tool
 from langchain.agents import Tool
 from langchain_community.utilities import GoogleSearchAPIWrapper
 from langchain_google_vertexai import VertexAI, HarmBlockThreshold, HarmCategory
@@ -26,9 +25,8 @@ GOOGLE_CSE_ID = os.getenv("GOOGLE_CSE_ID")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 PROJECT_ID = os.getenv("PROJECT_ID")
 REGION = os.getenv("REGION")
-BUCKET = os.getenv("BUCKET")
 
-required_env_vars = ["LANGCHAIN_TRACING_V2", "LANGCHAIN_API_KEY", "GPLACES_API_KEY", "GOOGLE_CSE_ID", "GOOGLE_API_KEY", "BUCKET", "REGION", "PROJECT_ID"]
+required_env_vars = ["LANGCHAIN_TRACING_V2", "LANGCHAIN_API_KEY", "GPLACES_API_KEY", "GOOGLE_CSE_ID", "GOOGLE_API_KEY", "REGION", "PROJECT_ID"]
 for var in required_env_vars:
     if os.getenv(var, None) is None:
         raise ValueError(f"Environment variable {var} is not set.")
@@ -38,12 +36,7 @@ class Input(BaseModel):
     input: str  
 class Output(BaseModel):
     output: Any
-vertexai.init(
-    project=PROJECT_ID,
-    location=REGION,
-    staging_bucket="gs://{}".format(BUCKET),
-)
-
+vertexai.init(project=PROJECT_ID,location=REGION)
 
 model_name = "gemini-1.5-pro-preview-0409"
 
@@ -51,17 +44,12 @@ search = GoogleSearchAPIWrapper()
 
 search_tool = Tool(
     name="google_search",
-    description="Search in Google for up to date information, examples: information about characters, news about sports, TV shows",
+    description="Searches in Google for up to date information, examples: information about characters, news about sports, TV shows, episodes, general topics",
     func=search.run,
 )
 
-places = GooglePlacesTool()
-
-places_tool = Tool(
-    name="search_places",
-    description="Search for information (address, phone numbers, opinions, details) of places like hairdresser, restaurants, monuments and their data using the Google Maps Places API",
-    func=places.run,
-)
+description_places="Searches for information (address, phone numbers, opinions, details) of places like hairdresser, restaurants, monuments and their data using the Google Maps Places API"
+places_tool = GooglePlacesTool(name="search_places", description= description_places)
 
 @tool("summary-tool")
 def summary_tool(url: str) -> str:

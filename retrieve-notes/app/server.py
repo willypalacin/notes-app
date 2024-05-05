@@ -2,8 +2,7 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from langserve import add_routes
 from langchain_google_firestore import FirestoreVectorStore
-from langchain_google_vertexai import VertexAIEmbeddings
-from langchain_google_vertexai import VertexAI
+from langchain_google_vertexai import VertexAI, ChatVertexAI, VertexAIEmbeddings
 from langchain_core.output_parsers import StrOutputParser
 from langchain import hub
 from langchain_core.runnables import RunnablePassthrough
@@ -40,7 +39,7 @@ vector_store = FirestoreVectorStore(
 )
 
 def format_docs(docs):
-    return "\n\n".join(doc.page_content for doc in docs)
+    return "\n\n-".join(doc.page_content for doc in docs)
 
 def retrieve_notes_attr():
     NUMBER_OF_RESULTS = 5
@@ -54,8 +53,8 @@ def retrieve_notes_attr():
         filters=None,
     )
 
-    prompt = hub.pull("gpalacin/retrieval_bigquery_prompt")
-    llm = VertexAI(model_name="gemini-1.5-pro-preview-0409", temperature=0.2)
+    prompt = hub.pull("gpalacin/retrieval_prompt")
+    llm = ChatVertexAI(model_name="gemini-1.0-pro", temperature=0.5)
     return retriever, prompt, llm
 
 retriever, prompt, llm = retrieve_notes_attr()
