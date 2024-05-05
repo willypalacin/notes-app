@@ -93,15 +93,15 @@ python3
 from google.cloud import firestore
 db = firestore.Client(project='<PROJECT_ID>') # replace by your project ID
 # We are going to create a categories collection with some categories
- db.collection("categories").document().set({"name": "Birthdays"})
-  db.collection("categories").document().set({"name": "Food"})
-  db.collection("categories").document().set({"name": "Random"})
+db.collection("categories").document().set({"name": "Birthdays"})
+db.collection("categories").document().set({"name": "Food"})
+db.collection("categories").document().set({"name": "Random"})
 
-  # Now that we have the categories created we can create a notes collection and add the content
+# Now that we have the categories created we can create a notes collection and add the content
 
-  db.collection("notes").document().set({"content": "Julius birthday is 14 November"})
-  db.collection("notes").document().set({"content": "I need to buy pepper and spagetthi"})
-  exit()
+db.collection("notes").document().set({"content": "Julius birthday is 14 November"})
+db.collection("notes").document().set({"content": "I need to buy pepper and spagetthi"})
+exit()
 ```
 As we will use semantic search we need to create a special type of index that accepts vector in the notes collection with the following command
 
